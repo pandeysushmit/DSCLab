@@ -1,0 +1,17 @@
+#logistic regression
+install.packages("caTools")
+library(caTools)
+head(mtcars)
+set.seed(300)
+split<-sample.split(mtcars$vs)
+train<-subset(mtcars,split==TRUE)
+test<-subset(mtcars,split==FALSE)
+md<-glm(vs~hp+wt,data=mtcars,family = binomial(link='logit'))
+md
+pred<-predict(md,test)
+pred<-ifelse(pred>0.5,1,0)
+table(pred,test$vs)
+install.packages("ROCR")
+library(ROCR)
+roc<-performance(prediction(pred,test$vs),measure = 'tpr',x.measure = 'fpr')
+plot(roc)
